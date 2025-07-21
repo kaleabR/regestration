@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sign Up</title>
+  <title>Login</title>
 
-  <!-- Firebase SDKs (Compat Version) -->
+  <!-- Firebase SDKs (Compat version) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
-  <!-- Your Firebase Config -->
+  <!-- Firebase Config -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCbiLd9DkDjlnoL4nZezTPaCZl329ChsUU",
@@ -27,47 +27,48 @@
 </head>
 <body>
   <div class="container">
-    <form id="signupForm" class="signup-form">
-      <h2>Sign Up</h2>
-      <input type="text" id="name" placeholder="Full Name" required />
+    <form id="loginForm" class="signup-form">
+      <h2>Login</h2>
       <input type="tel" id="phone" inputmode="numeric" pattern="[0-9]{7,15}" maxlength="15" placeholder="Phone Number" required />
       <input type="password" id="password" placeholder="Password" required />
-      <button type="submit">Create Account</button>
-      <p>Already have an account? <a href="login.html">Login</a></p>
+      <button type="submit">Login</button>
+      <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
     </form>
   </div>
 
-  <!-- JavaScript to Handle Form Submission -->
   <script>
-    const form = document.getElementById('signupForm');
+    const form = document.getElementById('loginForm');
 
     form.addEventListener('submit', function (e) {
-      e.preventDefault(); // stop form from refreshing the page
+      e.preventDefault();
 
-      const name = document.getElementById('name').value;
-      const phone = document.getElementById('phone').value;
-      const password = document.getElementById('password').value;
-
-      const userData = {
-        name: name,
-        phone: phone,
-        password: password
-      };
+      const phone = document.getElementById('phone').value.trim();
+      const password = document.getElementById('password').value.trim();
 
       const db = firebase.database();
-      const newUserRef = db.ref('users').push();
+      db.ref('users').once('value')
+        .then(snapshot => {
+          let found = false;
 
-      newUserRef.set(userData)
-        .then(() => {
-          alert("User created successfully!");
-          window.location.href = "https://fabulous-macaron-d21302.netlify.app"; // your homepage
+          snapshot.forEach(child => {
+            const user = child.val();
+            if (user.phone === phone && user.password === password) {
+              found = true;
+            }
+          });
+
+          if (found) {
+            alert("Login successful!");
+            window.location.href = "https://fabulous-macaron-d21302.netlify.app"; // your homepage
+          } else {
+            alert("Incorrect phone number or password");
+          }
         })
         .catch(error => {
-          console.error("Error saving user:", error);
-          alert("Failed to save user");
+          console.error("Login error:", error);
+          alert("Error during login. Please try again.");
         });
     });
   </script>
 </body>
 </html>
-

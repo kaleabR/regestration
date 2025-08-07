@@ -1,15 +1,11 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sign Up</title>
-
-  <!-- Firebase SDKs (Compat Version) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-
-  <!-- Your Firebase Config -->
+  <link rel="stylesheet" href="signup.css" />
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCbiLd9DkDjlnoL4nZezTPaCZl329ChsUU",
@@ -22,8 +18,6 @@
     };
     firebase.initializeApp(firebaseConfig);
   </script>
-
-  <link rel="stylesheet" href="signup.css" />
 </head>
 <body>
   <div class="container">
@@ -37,30 +31,22 @@
     </form>
   </div>
 
-  <!-- JavaScript to Handle Form Submission -->
   <script>
     const form = document.getElementById('signupForm');
-
     form.addEventListener('submit', function (e) {
-      e.preventDefault(); // stop form from refreshing the page
-
+      e.preventDefault();
       const name = document.getElementById('name').value;
       const phone = document.getElementById('phone').value;
       const password = document.getElementById('password').value;
 
-      const userData = {
-        name: name,
-        phone: phone,
-        password: password
-      };
-
+      const userData = { name, phone, password };
       const db = firebase.database();
       const newUserRef = db.ref('users').push();
 
       newUserRef.set(userData)
         .then(() => {
           alert("User created successfully!");
-          window.location.href = "https://homepageblackjack.netlify.app/"; // your homepage
+          window.location.href = `dashboard.html?phone=${encodeURIComponent(phone)}`;
         })
         .catch(error => {
           console.error("Error saving user:", error);
@@ -70,5 +56,3 @@
   </script>
 </body>
 </html>
-
-

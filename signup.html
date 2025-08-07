@@ -46,7 +46,7 @@
       newUserRef.set(userData)
         .then(() => {
           alert("User created successfully!");
-          window.location.href = `dashboard.html?phone=${encodeURIComponent(phone)}`;
+          window.location.href = `https://homepageblackjack.netlify.app/?phone=${encodeURIComponent(phone)}`;
         })
         .catch(error => {
           console.error("Error saving user:", error);
@@ -56,3 +56,4 @@
   </script>
 </body>
 </html>
+

@@ -1,15 +1,13 @@
+<!-- LOGIN PAGE (login.html) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login</title>
-
-  <!-- Firebase SDKs (Compat version) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-
-  <!-- Firebase Config -->
+  <link rel="stylesheet" href="signup.css" />
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCbiLd9DkDjlnoL4nZezTPaCZl329ChsUU",
@@ -22,8 +20,6 @@
     };
     firebase.initializeApp(firebaseConfig);
   </script>
-
-  <link rel="stylesheet" href="signup.css" />
 </head>
 <body>
   <div class="container">
@@ -38,28 +34,24 @@
 
   <script>
     const form = document.getElementById('loginForm');
-
     form.addEventListener('submit', function (e) {
       e.preventDefault();
-
       const phone = document.getElementById('phone').value.trim();
       const password = document.getElementById('password').value.trim();
-
       const db = firebase.database();
-      db.ref('users').once('value')
-        .then(snapshot => {
-          let found = false;
 
+      db.ref('users').orderByChild('phone').equalTo(phone).once('value')
+        .then(snapshot => {
+          let matchedUser = null;
           snapshot.forEach(child => {
-            const user = child.val();
-            if (user.phone === phone && user.password === password) {
-              found = true;
+            if (child.val().password === password) {
+              matchedUser = child.val();
             }
           });
 
-          if (found) {
+          if (matchedUser) {
             alert("Login successful!");
-            window.location.href = "https://homepageblackjack.netlify.app/"; // your homepage
+            window.location.href = `dashboard.html?phone=${encodeURIComponent(phone)}`;
           } else {
             alert("Incorrect phone number or password");
           }
@@ -72,4 +64,3 @@
   </script>
 </body>
 </html>
-
